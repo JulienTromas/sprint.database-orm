@@ -30,19 +30,17 @@ class UserManager implements IManager {
   constructor() {
     this.userRepository = getRepository(User);
   }
-
   /**
    * Get user by primary key
    *
    * FIXME
    */
   public async getUser(userId: string): Promise<User> {
-    return Promise.resolve(new User());
+    return this.userRepository.findOne({ id: userId });
+    //return Promise.resolve(new User());
   }
 
-  /**
-   * Create a new user
-   */
+  /* Create a new user */
   public async createUser(userDetails: Partial<UserInput>): Promise<User> {
     // 1. Hash password
     const saltRound = 10;
@@ -62,7 +60,12 @@ class UserManager implements IManager {
    * FIXME
    */
   public async updateUser(userId: string, updates: Partial<User>): Promise<User> {
-    return Promise.resolve(new User());
+    const UserUpdate = await this.userRepository.findOne({ id: userId });
+    for (const key in updates) {
+      UserUpdate[key] = updates[key];
+    }
+    return this.userRepository.save(UserUpdate);
+    //return Promise.resolve(new User());
   }
 
   /**
@@ -77,6 +80,7 @@ class UserManager implements IManager {
    * FIXME
    */
   public async removeUser(userId: string): Promise<DeleteResult | void> {
+    await this.userRepository.delete({ id: userId });
     return Promise.resolve();
   }
 

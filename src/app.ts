@@ -1,3 +1,4 @@
+require("dotenv").config();
 import express, { Application } from "express";
 import { Middleware, ErrorHandlingMiddleware } from "./middleware/types";
 import BaseController from "./services/common/controller";
@@ -83,7 +84,7 @@ class App {
 export function getDefaultApp(appSecret: string) {
   return new App({
     appSecret,
-    port: 5000,
+    port: 5432,
     services: [
       /* Where we register our services */
       new AuthController(appSecret),
