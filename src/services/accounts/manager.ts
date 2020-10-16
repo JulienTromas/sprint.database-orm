@@ -9,13 +9,8 @@ interface AccountWithBalance extends Account {
 class AccountManager implements IManager {
   protected accountRepository: Repository<Account>;
 
-  /**
-   * FIXME
-   * After defining the Account entity,
-   * uncomment the lines in the constructor definition
-   */
   constructor() {
-    // this.accountRepository = getRepository(Account);
+    this.accountRepository = getRepository(Account);
   }
 
   /**
@@ -29,12 +24,18 @@ class AccountManager implements IManager {
   public async getAccount(accountId: string): Promise<AccountWithBalance> {
     // You are free to remove any lines below
     const blankAccount = <AccountWithBalance>new Account();
-
-    // FIXME Your should derive account balance by aggregating all the transactions
-    let accountBalanceDerived = 0.0;
+    const accountBalanceDerived = 0.0;
     blankAccount.balance = accountBalanceDerived;
 
-    return Promise.resolve(blankAccount);
+    // FIXME Your should derive account balance by aggregating all the transactions
+    if (await this.accountRepository.findOne({ id: accountId })) {
+      const target = this.accountRepository.findOne({ id: accountId });
+      blankAccount.id = (await target).id;
+      blankAccount.name = (await target).name;
+      return Promise.resolve(blankAccount);
+    } else {
+      return Promise.reject();
+    }
   }
 
   /**
@@ -42,7 +43,11 @@ class AccountManager implements IManager {
    * create a new account
    */
   public async createAccount(details: Partial<Account>): Promise<Account> {
-    return Promise.resolve(new Account());
+    const newAccount = new Account();
+    newAccount.name = details.name;
+    newAccount.owner = details.owner;
+    await this.accountRepository.save(newAccount);
+    return Promise.resolve(newAccount);
   }
 
   /**
@@ -50,7 +55,12 @@ class AccountManager implements IManager {
    * update account details
    */
   public async updateAccount(accountId: string, changes: Partial<Account>): Promise<Account> {
-    return Promise.resolve(new Account());
+    const target = await this.accountRepository.findOne({ id: accountId });
+    for (const key in changes) {
+      target[key] = changes[key];
+    }
+    return this.accountRepository.save(target);
+    //return Promise.resolve(new Account());
   }
 
   /**
@@ -61,6 +71,7 @@ class AccountManager implements IManager {
    * - Cascade and delete all transactions
    */
   public async deleteAccount(accountId: string): Promise<DeleteResult | void> {
+    await this.accountRepository.delete({ id: accountId });
     return Promise.resolve();
   }
 }

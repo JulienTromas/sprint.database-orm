@@ -51,7 +51,8 @@ class UserManager implements IManager {
     newUser.username = userDetails.username;
     newUser.passwordHash = passwordHash;
 
-    return this.userRepository.save(newUser);
+    this.userRepository.save(newUser);
+    return Promise.resolve(newUser)
   }
 
   /**

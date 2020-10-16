@@ -112,7 +112,7 @@ describe("expense manager", () => {
       expect(response).to.have.status(201);
 
       expect(id).to.be.not.null;
-
+      console.log("res.body.id is", id);
       // Ensure password-related fields are inaccessible by users
       expect(passwordHash).to.be.undefined;
     });
@@ -233,7 +233,6 @@ describe("expense manager", () => {
       expect(res).to.have.status(201);
 
       const { id, name, owner } = res.body;
-
       expect(id).to.be.not.null;
       expect(name).to.be.equals("My Piggy Bank");
       expect(owner.id).to.be.equals(TEST_USER_ID);
@@ -277,7 +276,7 @@ describe("expense manager", () => {
       expect(account.name).to.be.equals("My Pink Piggy Bank");
     });
 
-    it("should be able to delete an account", async () => {
+    it.only("should be able to delete an account", async () => {
       /**
        * This doesn't test if the account  has indeed been
        * removed from database table to allow room for
@@ -298,7 +297,7 @@ describe("expense manager", () => {
       expect(getResponse).to.have.status(404);
     });
 
-    it("should be able to cascade delete transactions", async () => {
+    it.only("should be able to cascade delete transactions", async () => {
       const createDummyData = async () => {
         let newAccount = new Account();
         newAccount.id = "12eb75b6-bdee-4e12-a86d-844736579e98";

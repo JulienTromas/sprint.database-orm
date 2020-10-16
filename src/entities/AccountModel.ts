@@ -1,4 +1,4 @@
-import { Entity, OneToMany, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn } from "typeorm";
+import { Entity, OneToMany, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import Transaction from "./TransactionModel";
 import User from "./UserModel";
 
@@ -17,8 +17,9 @@ class Account {
   @Column()
   public name: string;
 
-  @OneToOne((type) => User)
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user.id, {
+    onDelete: "CASCADE",
+  })
   public owner: User;
 }
 

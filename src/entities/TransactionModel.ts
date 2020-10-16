@@ -28,7 +28,9 @@ class Transaction {
   @Column()
   public description: string;
 
-  @ManyToOne(() => Account, (account) => account.id)
+  @ManyToOne(() => Account, (account) => account.id, {
+    onDelete: "CASCADE",
+  })
   public account: Account;
 }
 
