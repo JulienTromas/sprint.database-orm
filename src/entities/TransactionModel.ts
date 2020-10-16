@@ -29,7 +29,7 @@ class Transaction {
   public description: string;
 
   @ManyToOne(() => Account, (account) => account.id, {
-    onDelete: "CASCADE",
+    onDelete: "CASCADE", eager: true,
   })
   public account: Account;
 }

@@ -52,7 +52,7 @@ class UserManager implements IManager {
     newUser.passwordHash = passwordHash;
 
     this.userRepository.save(newUser);
-    return Promise.resolve(newUser)
+    return Promise.resolve(newUser);
   }
 
   /**

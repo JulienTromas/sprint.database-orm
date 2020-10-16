@@ -112,7 +112,6 @@ describe("expense manager", () => {
       expect(response).to.have.status(201);
 
       expect(id).to.be.not.null;
-      console.log("res.body.id is", id);
       // Ensure password-related fields are inaccessible by users
       expect(passwordHash).to.be.undefined;
     });
@@ -276,7 +275,7 @@ describe("expense manager", () => {
       expect(account.name).to.be.equals("My Pink Piggy Bank");
     });
 
-    it.only("should be able to delete an account", async () => {
+    it("should be able to delete an account", async () => {
       /**
        * This doesn't test if the account  has indeed been
        * removed from database table to allow room for
@@ -297,7 +296,7 @@ describe("expense manager", () => {
       expect(getResponse).to.have.status(404);
     });
 
-    it.only("should be able to cascade delete transactions", async () => {
+    it.skip("should be able to cascade delete transactions", async () => {
       const createDummyData = async () => {
         let newAccount = new Account();
         newAccount.id = "12eb75b6-bdee-4e12-a86d-844736579e98";
@@ -425,6 +424,7 @@ describe("expense manager", () => {
 
     it("should be able to update a transaction", async () => {
       const accessToken = await signInAndGetToken();
+      //create
       const createResponse = await chai.request(app).post("/transactions").set("Authorization", accessToken).send({
         accountId: TEST_ACCOUNT_ID,
         amount: -10230.0,
@@ -432,7 +432,7 @@ describe("expense manager", () => {
         description: "1.2kg of", // Opps, we have a typo
       });
       expect(createResponse).to.have.status(201);
-
+      //update
       const { id } = createResponse.body;
       const updateResponse = await chai
         .request(app)
@@ -445,7 +445,7 @@ describe("expense manager", () => {
       expect(description).to.equals("1.2kg of shrimps");
     });
 
-    it("should be able to delete a transaction", async () => {
+    it.only("should be able to delete a transaction", async () => {
       const accessToken = await signInAndGetToken();
       const createResponse = await chai.request(app).post("/transactions").set("Authorization", accessToken).send({
         accountId: TEST_ACCOUNT_ID,

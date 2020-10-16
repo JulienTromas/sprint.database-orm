@@ -1,6 +1,7 @@
 import { Repository, getRepository, DeleteResult, MoreThanOrEqual } from "typeorm";
 import Transaction from "../../entities/TransactionModel";
 import { IManager } from "../common/manager";
+import Account from "../../entities/AccountModel";
 
 interface TransactionWithAccountId extends Transaction {
   accountId: string;
@@ -15,14 +16,12 @@ interface TransactionWithAccountId extends Transaction {
  */
 class TransactionManager implements IManager {
   protected transactionRepository: Repository<Transaction>;
+  protected accountRepository: Repository<Account>;
 
-  /**
-   * FIXME
-   * After defining the Account entity,
-   * uncomment the lines in the constructor definition
-   */
+
   constructor() {
-    // this.transactionRepository = getRepository(Transaction);
+    this.transactionRepository = getRepository(Transaction);
+    this.accountRepository = getRepository(Account);
   }
 
   /**
@@ -30,7 +29,10 @@ class TransactionManager implements IManager {
    * Get a transaction from database
    */
   public async getTransaction(transactionId: string): Promise<Transaction> {
-    return Promise.resolve(new Transaction());
+    //Promise.resolve(new Transaction());
+    const output = await this.transactionRepository.findOne(transactionId);
+    return output;
+
   }
 
   /**
@@ -62,7 +64,15 @@ class TransactionManager implements IManager {
    * create a new transaction
    */
   public async createTransaction(details: Partial<TransactionWithAccountId>): Promise<Transaction> {
-    return Promise.resolve(new Transaction());
+    const newTransaction = await new Transaction();
+    newTransaction.amount = details.amount;
+    newTransaction.transactionDate = details.transactionDate;
+    newTransaction.description = details.description;
+    newTransaction.account = await this.accountRepository.findOne(details.accountId);
+
+    await this.transactionRepository.save(newTransaction);
+    return Promise.resolve(newTransaction);
+    // return Promise.resolve(new Transaction());
   }
 
   /**
@@ -76,15 +86,11 @@ class TransactionManager implements IManager {
     transactionId: string,
     changes: Partial<TransactionWithAccountId>,
   ): Promise<Transaction> {
-    // if ("accountId" in changes) {
-    //     changes = {
-    //         ...changes,
-    //         account: <any>{ id: changes.accountId }
-    //     };
-    // }
-    // await this.transactionRepository.update(transactionId, changes);
-    // return this.transactionRepository.findOne(transactionId);
-    return Promise.resolve(new Transaction());
+    const target = await this.transactionRepository.findOne({ id: transactionId });
+    for (const key in changes) {
+      target[key] = changes[key];
+    }
+    return this.transactionRepository.save(target);
   }
 
   /**
@@ -92,6 +98,7 @@ class TransactionManager implements IManager {
    * delete a transaction
    */
   public async deleteTransaction(transactionId): Promise<DeleteResult | void> {
+    await this.transactionRepository.delete({ id: transactionId });
     return Promise.resolve();
   }
 }
