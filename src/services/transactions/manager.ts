@@ -1,4 +1,4 @@
-import { Repository, getRepository, DeleteResult, MoreThanOrEqual } from "typeorm";
+import { Repository, getRepository, DeleteResult, MoreThanOrEqual, Not, LessThan } from "typeorm";
 import Transaction from "../../entities/TransactionModel";
 import { IManager } from "../common/manager";
 import Account from "../../entities/AccountModel";
@@ -18,7 +18,6 @@ class TransactionManager implements IManager {
   protected transactionRepository: Repository<Transaction>;
   protected accountRepository: Repository<Account>;
 
-
   constructor() {
     this.transactionRepository = getRepository(Transaction);
     this.accountRepository = getRepository(Account);
@@ -32,7 +31,6 @@ class TransactionManager implements IManager {
     //Promise.resolve(new Transaction());
     const output = await this.transactionRepository.findOne(transactionId);
     return output;
-
   }
 
   /**
@@ -40,7 +38,12 @@ class TransactionManager implements IManager {
    * Get a list of transactions with ids from database
    */
   public async listTransactionsByIds(transactionIds: string[]): Promise<Transaction[]> {
-    return Promise.resolve([]);
+    const result = [];
+    for (const id of transactionIds) {
+      const trans = await this.transactionRepository.findOne(id);
+      result.push(trans);
+    }
+    return Promise.resolve(result);
   }
 
   /**
@@ -48,7 +51,8 @@ class TransactionManager implements IManager {
    * Get a list of transactions of a particular account
    */
   public async listTransactionsInAccount(accountId: string): Promise<Transaction[]> {
-    return Promise.resolve([]);
+    const result = await this.transactionRepository.find({ where: { account: accountId } });
+    return Promise.resolve(result);
   }
 
   /**
@@ -56,7 +60,12 @@ class TransactionManager implements IManager {
    * Get a list of transactions less than `maximumAmount` in a particular `account`
    */
   public async filterTransactionsByAmountInAccount(accountId: string, maximumAmount: number): Promise<Transaction[]> {
-    return Promise.resolve([]);
+    const result = await this.transactionRepository.find({
+      where: { account: accountId, amount: LessThan(maximumAmount) },
+    });
+
+    console.log(result);
+    return Promise.resolve(result);
   }
 
   /**

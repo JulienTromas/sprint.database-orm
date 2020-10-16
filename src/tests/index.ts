@@ -445,7 +445,7 @@ describe("expense manager", () => {
       expect(description).to.equals("1.2kg of shrimps");
     });
 
-    it.only("should be able to delete a transaction", async () => {
+    it("should be able to delete a transaction", async () => {
       const accessToken = await signInAndGetToken();
       const createResponse = await chai.request(app).post("/transactions").set("Authorization", accessToken).send({
         accountId: TEST_ACCOUNT_ID,
@@ -534,7 +534,7 @@ describe("expense manager", () => {
       ]);
     });
 
-    it("list transactions in account", async () => {
+    it.only("list transactions in account", async () => {
       /**
        * Test subject: TransactionManager -> listTransactionsInAccount
        */
@@ -548,7 +548,7 @@ describe("expense manager", () => {
       ]);
     });
 
-    it("list transactions by ids", async () => {
+    it.only("list transactions by ids", async () => {
       /**
        * Test subject: TransactionManager -> listTransactionsByIds
        */
@@ -565,7 +565,7 @@ describe("expense manager", () => {
       });
     });
 
-    it("list transactions in account which amounts less than a particular number", async () => {
+    it.only("list transactions in account which amounts less than a particular number", async () => {
       /**
        * Test subject: TransactionManager -> filterTransactionsByAmountInAccount
        */
