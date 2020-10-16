@@ -13,12 +13,23 @@ import Account from "./AccountModel";
 /**
  * FIXME
  */
+
+@Entity({ name: "transactions"})
 class Transaction {
+  @PrimaryGeneratedColumn("uuid")
   public id: string;
+
+  @Column()
   public amount: number;
-  public account: Account;
+
+  @Column()
   public transactionDate: Date;
+
+  @Column()
   public description: string;
+
+  @ManyToOne(() => Account, (account) => account.id)
+  public account: Account;
 }
 
 export default Transaction;

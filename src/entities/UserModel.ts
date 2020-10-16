@@ -1,10 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from "typeorm";
 
 /**
  * User entity has been defined
  * You shouldn't need to alter any code here
  */
-@Entity({name: "users" /* Relation name in database */})
+
+@Entity({ name: "users" /* Relation name in database */ })
 class User {
   @PrimaryGeneratedColumn("uuid")
   public id: string;

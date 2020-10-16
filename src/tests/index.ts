@@ -180,15 +180,15 @@ describe("expense manager", () => {
   const createNewAccount = async () => {
     /**
      * Restore our test account
-     * 
+     *
      * [1] https://typeorm.io/#/relations-faq/how-to-use-relation-id-without-joining-relation
      */
     const newAccount = new Account();
     newAccount.id = TEST_ACCOUNT_ID;
     newAccount.name = "tester coin pouch";
-    newAccount.owner = await userRepo.findOne(TEST_USER_ID);  // Alternatively, use [1]
+    newAccount.owner = await userRepo.findOne(TEST_USER_ID); // Alternatively, use [1]
     await accountRepo.save(newAccount);
-  }
+  };
 
   describe("Account service", () => {
     before(() => {
